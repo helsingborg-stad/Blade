@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Blade Test Suite">
-            <directory suffix="Test.php">tests</directory>
-        </testsuite>
-    </testsuites>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd" bootstrap="tests/phpunit/Bootstrap.php" backupGlobals="false" colors="true" cacheDirectory=".phpunit.cache">
+  <coverage>
+    <report>
+      <text outputFile="php://stdout" showUncoveredFiles="true"/>
+      <html outputDirectory="coverage/phpunit"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Unit Test Suite">
+      <directory suffix=".php">./tests/phpunit/tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </source>
 </phpunit>

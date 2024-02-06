@@ -5,3 +5,8 @@
 /vendor
 composer.lock
 Thumbs.db
+
+.phpunit.result.cache
+
+# Exclude from ignore
+!.gitkeep
