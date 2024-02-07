@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="Blade">
+    <file>./src</file>
+    <file>./tests</file>
+    <rule ref="Hbg-WordPress"></rule>
+
+    <!-- Do not require docs in tests -->
+    <rule ref="Squiz.Commenting.FunctionComment.Missing">
+        <exclude-pattern>tests/phpunit/</exclude-pattern></rule>
+    <rule ref="Squiz.Commenting.ClassComment.Missing">
+        <exclude-pattern>tests/phpunit/</exclude-pattern>
+    </rule>
+
+</ruleset>

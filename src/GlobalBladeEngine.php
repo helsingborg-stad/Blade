@@ -3,19 +3,26 @@
 namespace HelsingborgStad;
 
 use HelsingborgStad\Services\BladeService\BladeService;
+use HelsingborgStad\Services\BladeService\BladeServiceInstance;
 
-class GlobalBladeEngine {
-
+/**
+ * Class GlobalBladeEngine
+ *
+ * This class represents a global blade engine that provides a singleton instance of the BladeService.
+ */
+class GlobalBladeEngine
+{
     private static ?BladeService $bladeService = null;
 
-    public static function getInstance():BladeService {
-
-        if( self::$bladeService === null ) {
-            self::$bladeService = new class implements BladeService {
-                public function render($template, $data = []) {
-                    return 'Rendered template';
-                }
-            };
+    /**
+     * Get the singleton instance of the BladeService.
+     *
+     * @return BladeService The singleton instance of the BladeService.
+     */
+    public static function getInstance(array $views = [], $cachePath = ""): BladeService
+    {
+        if (self::$bladeService === null) {
+            self::$bladeService = new BladeServiceInstance($views, $cachePath);
         }
 
         return self::$bladeService;

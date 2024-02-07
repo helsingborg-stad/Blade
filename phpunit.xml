@@ -3,12 +3,12 @@
   <coverage>
     <report>
       <text outputFile="php://stdout" showUncoveredFiles="true"/>
-      <html outputDirectory="coverage/phpunit"/>
+      <html outputDirectory="tests/phpunit/.coverage"/>
     </report>
   </coverage>
   <testsuites>
     <testsuite name="Unit Test Suite">
-      <directory suffix=".php">./tests/phpunit/tests</directory>
+      <directory>./tests/phpunit/tests/</directory>
     </testsuite>
   </testsuites>
   <source>

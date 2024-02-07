@@ -8,6 +8,7 @@ Thumbs.db
 
 .phpunit.result.cache
 .phpunit.cache
+tests/phpunit/.coverage
 
 # Exclude from ignore
 !.gitkeep
