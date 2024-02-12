@@ -1,60 +1,114 @@
-[![Build Status](https://travis-ci.org/benjamincrozat/blade.svg?branch=master)](https://travis-ci.org/benjamincrozat/blade)
-[![Latest Stable Version](https://poser.pugx.org/benjamincrozat/blade/v/stable)](https://packagist.org/packages/benjamincrozat/blade)
-[![License](https://poser.pugx.org/benjamincrozat/blade/license)](https://packagist.org/packages/benjamincrozat/blade)
-[![Total Downloads](https://poser.pugx.org/benjamincrozat/blade/downloads)](https://packagist.org/packages/benjamincrozat/blade)
+<!-- Shields -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
+
+
+<a href="https://github.com/helsingborg-stad/blade">
+    <img src="docs/images/hbg-github-logo-combo.png" alt="Logo" width="300">
+</a>
 
 # Blade
 
-Use [Laravel Blade](https://laravel.com/docs/blade) in any PHP project. The adapter class is clean and I don't make use of unecessary Laravel related dependencies.
-
+Use [Laravel Blade](https://laravel.com/docs/blade) in any PHP project.\
 **If you don't know about Blade yet, please refer to the [official documentation](https://laravel.com/docs/blade).**
+  
+[Report Bug](https://github.com/helsingborg-stad/blade/issues) · [Request Feature](https://github.com/helsingborg-stad/blade/issues)
+  
 
 ## Requirements
 
-- PHP 5.6+
+- PHP ^8.3+
 
 ## Installation
 
 ```php
-composer require benjamincrozat/blade
+composer require helsingborg-stad/blade
 ```
 
 ## Usage
 
-This package allows you to do almost everything you were able to do in a Laravel project.
+### Initialize blade engine:
+This can be done either as a local instance or as a global reusable instance.
 
-Here is a basic view rendering:
-
+#### Locally
 ```php
-use BC\Blade\Blade;
-
-$blade = new Blade(__DIR__ . '/views', __DIR__ . '/cache');
-
-echo $blade->make('home', ['foo' => 'bar'])->render();
+$viewPaths    = ['path/to/view/files'];
+$cachePath    = 'path/to/cache/files';
+$container    = new \Illuminate\Container\Container();
+$bladeService = new BladeService($viewPaths, $cachePath, $container);
 ```
 
-Add the `@hello('John')` directive:
+#### Globally (for convenient reuse)
+```php
+$viewPaths    = ['path/to/view/files'];
+$cachePath    = 'path/to/cache/files';
+$bladeService = GlobalBladeService::getInstance($viewPaths, $cachePath);
+
+// You can now reuse the same instance by calling:
+$sameInstance = GlobalBladeService::getInstance($viewPaths, $cachePath);
+```
+
+### Render view
 
 ```php
-$blade->directive('hello', function ($expression) {
-    $expression = trim($expression, '\'"');
+$viewFile = 'foo.blade.php';
+$html     = $bladeService->makeView($viewFile)->render();
+```
 
-    return "<?php echo 'Hello $expression!'; ?>";
+#### Render view with variables
+
+```php
+$viewFile = 'foo.blade.php';
+$html = $bladeService->makeView($viewFile, ['name' => 'John Doe'])->render();
+```
+
+
+### Register a custom directive
+
+```php
+$bladeService->registerDirective('datetime', function ($expression) {
+    return "<?php echo with({$expression})->format('F d, Y'); ?>";
 });
+
+// The directive can now be used by adding the @datetime directive to a view file.
 ```
 
-Make a variable available in all views thanks to view composers:
+### Register a component
 
 ```php
-$blade->composer('*', function ($view) {
-    $view->with(['foo' => 'bar']);
+$bladeService->registerComponent('foo', function ($view) {
+    $view->with('name', 'John Doe');
 });
+
+// The component can now be used by adding @component('foo')@endcomponent to a view file.
 ```
 
-... and so on. Just use Blade as you are used to.
+### Register a component directive
+If you have already registered a component. That component can be added as a directive by doing the following:
+```php
+$bladeService->registerComponentDirective('componentname', 'directivename');
 
-Enjoy!
+// This will register a directive that can be used by adding @directivename()@enddirectivename to a view file, and it will output the component.
+```
 
-## License
+### Add additional view file paths
+If you need to add more view file paths after initializing the Blade Service, this can be done by calling `BladeService::addViewPath`
+```php
+$bladeService->addViewPath('extra/view/path');
+```
 
-[MIT](http://opensource.org/licenses/MIT)
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/helsingborg-stad/blade.svg?style=flat-square
+[contributors-url]: https://github.com/helsingborg-stad/blade/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/helsingborg-stad/blade.svg?style=flat-square
+[forks-url]: https://github.com/helsingborg-stad/blade/network/members
+[stars-shield]: https://img.shields.io/github/stars/helsingborg-stad/blade.svg?style=flat-square
+[stars-url]: https://github.com/helsingborg-stad/blade/stargazers
+[issues-shield]: https://img.shields.io/github/issues/helsingborg-stad/blade.svg?style=flat-square
+[issues-url]: https://github.com/helsingborg-stad/blade/issues
+[license-shield]: https://img.shields.io/github/license/helsingborg-stad/blade.svg?style=flat-square
+[license-url]: https://raw.githubusercontent.com/helsingborg-stad/blade/main/LICENSE

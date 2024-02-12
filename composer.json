@@ -5,8 +5,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Benjamin Crozat",
-            "email": "benjamincrozat@me.com"
+            "name": "Thor Brink",
+            "email": "thor.brink@helsingborg.se"
         }
     ],
     "support": {
@@ -46,10 +46,11 @@
         "lint": "phpcs",
         "fix": "phpcbf"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require-dev": {
         "helsingborg-stad/phpcs": "^0.3.5",
+        "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^11.0"
     }
 }

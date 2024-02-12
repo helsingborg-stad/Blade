@@ -1,6 +1,6 @@
 <?php
 
-namespace HelsingborgStad\Services\BladeService;
+namespace HelsingborgStad\BladeService;
 
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -12,8 +12,18 @@ use Illuminate\Contracts\View\View;
  * It provides methods for rendering views, registering components and directives,
  * composing views, and adding view paths.
  */
-interface BladeService extends Make
+interface BladeServiceInterface
 {
+    /**
+     * Create a view with the given data.
+     *
+     * @param string $view The name of the view to render.
+     * @param array $data The data to pass to the view.
+     * @param array $mergeData The data to merge with the view data.
+     * @return View The rendered view.
+     */
+    public function makeView(string $view, array $data = [], array $mergeData = []): View;
+
     /**
      * Create a component directive with the given alias.
      *
@@ -21,7 +31,7 @@ interface BladeService extends Make
      * @param string $alias The alias to use for the component.
      * @return void
      */
-    public function component(string $component, string $alias): void;
+    public function registerComponentDirective(string $component, string $alias): void;
 
     /**
      * Register a directive handler.
@@ -30,7 +40,7 @@ interface BladeService extends Make
      * @param callable $handler The handler function for the directive.
      * @return void
      */
-    public function directive(string $name, callable $handler): void;
+    public function registerDirective(string $name, callable $handler): void;
 
     /**
      * Register a view composer.
@@ -39,7 +49,7 @@ interface BladeService extends Make
      * @param Closure|string $callback The callback function or class method to execute.
      * @return array The registered composers.
      */
-    public function composer(array|string $views, Closure|string $callback): array;
+    public function registerComponent(array|string $views, Closure|string $callback): array;
 
     /**
      * Add a view path to the service.
