@@ -46,11 +46,19 @@ class GlobalBladeService implements GlobalBladeServiceInterface
     private static function validateRequiredInputParameters($viewPaths, $cachePath): void
     {
         if (!is_array($viewPaths) || empty($viewPaths)) {
-            throw new InvalidArgumentException('The viewPaths parameter must be an array containing at least one view path when calling getInstance the first time.');
+            $message = <<<EOF
+            The $viewPaths parameter must be an array 
+            containing at least one view path when calling getInstance the first time.
+            EOF;
+            throw new InvalidArgumentException($message);
         }
 
         if (!is_string($cachePath) || empty($cachePath)) {
-            throw new InvalidArgumentException('The cachePath parameter must be a string containing the path to the cache folder when calling getInstance the first time.');
+            $message = <<<EOF
+            The $cachePath parameter must be a string
+            containing the path to the cache folder when calling getInstance the first time.
+            EOF;
+            throw new InvalidArgumentException($message);
         }
     }
 }
