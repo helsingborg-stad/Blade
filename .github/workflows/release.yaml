@@ -1,0 +1,27 @@
+name: Set tag and release
+
+on:
+  workflow_run:
+    workflows: ["Unit Tests"]
+    branches: [main]
+    types: 
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Create Release and bump version files
+        uses: helsingborg-stad/release-wp-plugin-action@1.0.3
+        with:
+          php-version: 8.3
