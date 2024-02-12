@@ -19,7 +19,7 @@
         "templates"
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.0",
         "illuminate/view": "^8.0.0"
     },
     "autoload": {
