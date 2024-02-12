@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd" 
-  bootstrap="tests/phpunit/Bootstrap.php" 
-  backupGlobals="false" 
-  colors="true" 
-  cacheDirectory=".phpunit.cache">
+<phpunit
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
+  bootstrap="tests/phpunit/Bootstrap.php"
+  backupGlobals="false"
+  colors="true"
+  cacheDirectory=".phpunit.cache"
+  displayDetailsOnTestsThatTriggerWarnings="true"
+  displayDetailsOnTestsThatTriggerNotices="true"
+  displayDetailsOnTestsThatTriggerErrors="true"
+  displayDetailsOnTestsThatTriggerDeprecations="true"
+  displayDetailsOnSkippedTests="true"
+  displayDetailsOnIncompleteTests="true"
+  >
   <coverage>
     <report>
       <text outputFile="php://stdout" showUncoveredFiles="true"/>
@@ -13,7 +20,7 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="Unit Test Suite">
+    <testsuite name="Unit Tests">
       <directory>./tests/phpunit/tests/</directory>
     </testsuite>
   </testsuites>
@@ -23,6 +30,6 @@
     </include>
   </source>
   <php>
-    <ini name="display_errors" value="E_ALL"/>
+    <ini name="error_reporting" value="E_ALL"/>
   </php>
 </phpunit>
