@@ -4,9 +4,10 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
+![PHP 8.2](https://github.com/helsingborg-stad/Blade/actions/workflows/php-test.yaml/badge.svg)
 
 
-<a href="https://github.com/helsingborg-stad/blade">
+<a href="https://github.com/helsingborg-stad/Blade">
     <img src="docs/images/hbg-github-logo-combo.png" alt="Logo" width="300">
 </a>
 
@@ -15,17 +16,17 @@
 Use [Laravel Blade](https://laravel.com/docs/blade) in any PHP project.\
 **If you don't know about Blade yet, please refer to the [official documentation](https://laravel.com/docs/blade).**
   
-[Report Bug](https://github.com/helsingborg-stad/blade/issues) · [Request Feature](https://github.com/helsingborg-stad/blade/issues)
+[Report Bug](https://github.com/helsingborg-stad/Blade/issues) · [Request Feature](https://github.com/helsingborg-stad/Blade/issues)
   
 
 ## Requirements
 
-- PHP ^8.3+
+- PHP ^8.2+
 
 ## Installation
 
 ```php
-composer require helsingborg-stad/blade
+composer require helsingborg-stad/Blade
 ```
 
 ## Usage
@@ -102,13 +103,13 @@ $bladeService->addViewPath('extra/view/path');
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/helsingborg-stad/blade.svg?style=flat-square
-[contributors-url]: https://github.com/helsingborg-stad/blade/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/helsingborg-stad/blade.svg?style=flat-square
-[forks-url]: https://github.com/helsingborg-stad/blade/network/members
-[stars-shield]: https://img.shields.io/github/stars/helsingborg-stad/blade.svg?style=flat-square
-[stars-url]: https://github.com/helsingborg-stad/blade/stargazers
-[issues-shield]: https://img.shields.io/github/issues/helsingborg-stad/blade.svg?style=flat-square
-[issues-url]: https://github.com/helsingborg-stad/blade/issues
-[license-shield]: https://img.shields.io/github/license/helsingborg-stad/blade.svg?style=flat-square
-[license-url]: https://raw.githubusercontent.com/helsingborg-stad/blade/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/helsingborg-stad/Blade.svg?style=flat-square
+[contributors-url]: https://github.com/helsingborg-stad/Blade/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/helsingborg-stad/Blade.svg?style=flat-square
+[forks-url]: https://github.com/helsingborg-stad/Blade/network/members
+[stars-shield]: https://img.shields.io/github/stars/helsingborg-stad/Blade.svg?style=flat-square
+[stars-url]: https://github.com/helsingborg-stad/Blade/stargazers
+[issues-shield]: https://img.shields.io/github/issues/helsingborg-stad/Blade.svg?style=flat-square
+[issues-url]: https://github.com/helsingborg-stad/Blade/issues
+[license-shield]: https://img.shields.io/github/license/helsingborg-stad/Blade.svg?style=flat-square
+[license-url]: https://raw.githubusercontent.com/helsingborg-stad/Blade/main/LICENSE
