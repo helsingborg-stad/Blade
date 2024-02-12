@@ -5,6 +5,8 @@
     <rule ref="Hbg-WordPress">
         <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
         <exclude-pattern>tests/BladeService/cache/</exclude-pattern>
+        <exclude-pattern>tests/BladeService/views/</exclude-pattern>
+        <exclude-pattern>tests/BladeService/extra-views/</exclude-pattern>
     </rule>
 
     <!-- Do not require docs in tests -->
