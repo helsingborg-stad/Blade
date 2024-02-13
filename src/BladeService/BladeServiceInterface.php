@@ -49,7 +49,7 @@ interface BladeServiceInterface
      * @param Closure|string $callback The callback function or class method to execute.
      * @return array The registered composers.
      */
-    public function registerComponent(array|string $views, Closure|string $callback): array;
+    public function registerComponent($views, $callback): array;
 
     /**
      * Add a view path to the service.
