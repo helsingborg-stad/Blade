@@ -21,7 +21,7 @@ Use [Laravel Blade](https://laravel.com/docs/blade) in any PHP project.\
 
 ## Requirements
 
-- PHP ^8.2+
+- PHP ^7.4|^8.2+
 
 ## Installation
 
