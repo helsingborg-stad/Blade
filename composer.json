@@ -19,7 +19,7 @@
         "templates"
     ],
     "require": {
-        "php": "7.4|^8.0",
+        "php": "^7.4|^8.0",
         "illuminate/view": "^8.0.0"
     },
     "autoload": {
@@ -51,6 +51,6 @@
     "require-dev": {
         "helsingborg-stad/phpcs": "^0.3.5",
         "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^9.6|^10.5|^11.0"
+        "phpunit/phpunit": "^9.6"
     }
 }

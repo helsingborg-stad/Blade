@@ -32,21 +32,27 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    #[TestDox('A view can be rendered')]
+    /**
+     * @testdox A view can be rendered
+     */
     public function testBasicComponent()
     {
         $output = $this->bladeService->makeView('basic')->render();
         $this->assertEquals('Hello World!', trim($output));
     }
 
-    #[TestDox('Variables can be passed to a component')]
+    /**
+     * @testdox Variables can be passed to a component
+     */
     public function testVariables()
     {
         $output = $this->bladeService->makeView('variables', ['name' => 'John Doe'])->render();
         $this->assertEquals('Hello John Doe!', trim($output));
     }
 
-    #[TestDox('Directive can be registered')]
+    /**
+     * @testdox Directive can be registered
+     */
     public function testDirective()
     {
         $this->bladeService->registerDirective('datetime', function ($expression) {
@@ -57,7 +63,9 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Your birthday is September 28, 1983', trim($output));
     }
 
-    #[TestDox('A component can be registered')]
+    /**
+     * @testdox A component can be registered
+     */
     public function testComponentComposer()
     {
         $this->bladeService->registerComponent('variables', function ($view) {
@@ -68,7 +76,9 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Hello John Doe!', trim($output));
     }
 
-    #[TestDox('A component can be registered with an alias directive')]
+    /**
+     * @testdox A component can be registered with an alias directive
+     */
     public function testComponentDirective()
     {
         $this->bladeService->registerComponentDirective('alias.source', 'sayHello');
@@ -81,7 +91,9 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Hello World!', trim($output));
     }
 
-    #[TestDox('A view path can be added')]
+    /**
+     * @testdox A view path can be added
+     */
     public function testAddViewPath()
     {
         $this->bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views');

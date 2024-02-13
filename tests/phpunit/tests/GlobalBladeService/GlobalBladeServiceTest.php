@@ -7,21 +7,24 @@ use Mockery;
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
 use HelsingborgStad\GlobalBladeService\GlobalBladeService;
-use PHPUnit\Framework\Attributes\BackupStaticProperties;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
-#[BackupStaticProperties(true)]
+/**
+ * @backupStaticAttributes enabled
+ */
 class GlobalBladeServiceTest extends TestCase
 {
-    #[TestDox('Class exists')]
+    /**
+     * @testdox Class exists
+     */
     public function testClassExists()
     {
         $this->assertTrue(class_exists('HelsingborgStad\GlobalBladeService\GlobalBladeService'));
     }
 
-    #[TestDox('getInstance throws when not passing $viewPaths on first call')]
+    /**
+     * @testdox getInstance throws when not passing $viewPaths on first call
+     */
     public function testGetInstanceThrowsWhenMissingViewPaths()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -29,7 +32,9 @@ class GlobalBladeServiceTest extends TestCase
         GlobalBladeService::getInstance($invalidViewPaths);
     }
 
-    #[TestDox('getInstance throws when not passing $cachePath on first call')]
+    /**
+     * @testdox getInstance throws when not passing $cachePath on first call
+     */
     public function testGetInstanceThrowsWhenMissingCachePath()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -38,8 +43,11 @@ class GlobalBladeServiceTest extends TestCase
         GlobalBladeService::getInstance($viewPaths, $invalidCachePath);
     }
 
-    #[RunInSeparateProcess]
-    #[TestDox('getInstance returns implementation of BladeServiceInterface on success')]
+    /**
+     * @testdox getInstance returns implementation of BladeServiceInterface on success
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testGetInstanceReturnsBladeServiceInterfaceOnSuccess()
     {
         $bladeServiceMock = Mockery::mock('overload:' . BladeService::class, BladeServiceInterface::class);
