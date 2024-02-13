@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="Blade">
+    <file>./src</file>
+    <file>./tests/phpunit</file>
+    <exclude-pattern>./tests/phpunit/tests/*/cache</exclude-pattern>
+    <exclude-pattern>./tests/phpunit/tests/*/*.blade.php</exclude-pattern>
+
+    <rule ref="Hbg-WordPress">
+        <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
+    </rule>
+
+    <!-- Do not require docs in tests -->
+    <rule ref="Squiz.Commenting.FunctionComment.Missing">
+        <exclude-pattern>tests/phpunit/</exclude-pattern></rule>
+    <rule ref="Squiz.Commenting.ClassComment.Missing">
+        <exclude-pattern>tests/phpunit/</exclude-pattern>
+    </rule>
+
+</ruleset>

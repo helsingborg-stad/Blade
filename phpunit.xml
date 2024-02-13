@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="./tests/phpunit/Bootstrap.php"
+         backupGlobals="false"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Blade Test Suite">
-            <directory suffix="Test.php">tests</directory>
-        </testsuite>
-    </testsuites>
+         convertWarningsToExceptions="true">
+
+  <coverage processUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+    </exclude>
+    <report>
+      <text outputFile="php://stdout" showUncoveredFiles="true"/>
+      <html outputDirectory="./tests/phpunit/.coverage"/>
+      <clover outputFile="./tests/phpunit/.coverage/clover.xml"/>
+    </report>
+  </coverage>
+
+  <testsuites>
+    <testsuite name="default">
+      <directory suffix=".php">./tests/phpunit/tests</directory>
+      <!-- exclude by path -->
+      <exclude>./tests/phpunit/tests/*/cache</exclude>
+      <exclude>./tests/phpunit/tests/*/views</exclude>
+      <exclude>./tests/phpunit/tests/*/extra-views</exclude>
+    </testsuite>
+  </testsuites>
+
+  <php>
+    <ini name="error_reporting" value="E_ALL" />
+  </php>
 </phpunit>
