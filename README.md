@@ -52,7 +52,7 @@ $bladeService = GlobalBladeService::getInstance($viewPaths, $cachePath);
 // You can now reuse the same instance by calling:
 $sameInstance = GlobalBladeService::getInstance($viewPaths, $cachePath);
 ```
-> [!NOTICE]
+> [!NOTE]
 > If calling `GlobalBladeService::getInstance` with parameters after the first call, the $viewPaths will be added and the $cachePath parameter will be ignored.
 
 ### Render view
