@@ -20,8 +20,9 @@ Use [Laravel Blade](https://laravel.com/docs/blade) in any PHP project.\
   
 
 ## Requirements
+- PHP ^7.4 | ^8.0
+- Composer
 
-- PHP ^7.4|^8.2+
 
 ## Installation
 
@@ -101,8 +102,20 @@ If you need to add more view file paths after initializing the Blade Service, th
 $bladeService->addViewPath('extra/view/path');
 ```
 
-> [!NOTE]
+> [!WARNING]
 > For every unique view path added, performance will be affected. This is due to the fact that the Blade Service will have to search through all view paths to find the correct view file. Therefore, it is recommended to add as few view paths as possible.
+
+## Testing
+
+### Unit tests
+```bash
+composer test
+```
+
+### Code coverage
+```bash
+composer test:coverage
+```
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
