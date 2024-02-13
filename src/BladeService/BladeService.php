@@ -140,12 +140,17 @@ class BladeService implements BladeServiceInterface
     public function addViewPath(string $path, $prepend = false): void
     {
         if ($prepend) {
-            /** @var \Illuminate\View\FileViewFinder $finder */
-            $finder = $this->factory->getFinder();
-            $finder->prependLocation($path);
+            $this->prependViewPath($path);
         } else {
             $this->factory->addLocation($path);
         }
+    }
+
+    private function prependViewPath(string $path): void
+    {
+        /** @var \Illuminate\View\FileViewFinder $finder */
+        $finder = $this->factory->getFinder();
+        $finder->prependLocation($path);
     }
 
     /**
