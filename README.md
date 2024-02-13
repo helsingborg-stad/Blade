@@ -103,7 +103,7 @@ $bladeService->addViewPath('extra/view/path');
 ```
 
 #### Prepend view file paths
-If you need to add more view file paths before the existing view file paths, this can be done by calling `BladeService::prependViewPath`
+If you need to add more view file paths before the existing view file paths, this can be done by calling `BladeService::prependViewPath` with the second parameter set to `true`.
 ```php
 $bladeService->prependViewPath('extra/view/path', true);
 ```
