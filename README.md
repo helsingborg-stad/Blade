@@ -32,7 +32,7 @@ composer require helsingborg-stad/Blade
 ## Usage
 
 ### Initialize blade engine:
-This can be done either as a local instance or as a global reusable instance.
+This can be done either as a local instance or as a global reusable instance. The global instance is recommended better performance and less memory usage.
 
 #### Locally
 ```php
@@ -100,6 +100,9 @@ If you need to add more view file paths after initializing the Blade Service, th
 ```php
 $bladeService->addViewPath('extra/view/path');
 ```
+
+> [!NOTE]
+> For every unique view path added, performance will be affected. This is due to the fact that the Blade Service will have to search through all view paths to find the correct view file. Therefore, it is recommended to add as few view paths as possible.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
