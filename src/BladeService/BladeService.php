@@ -146,6 +146,12 @@ class BladeService implements BladeServiceInterface
         }
     }
 
+    /**
+     * Prepend a view path to the file view finder.
+     *
+     * @param string $path The path to prepend.
+     * @return void
+     */
     private function prependViewPath(string $path): void
     {
         /** @var \Illuminate\View\FileViewFinder $finder */
