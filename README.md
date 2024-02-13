@@ -102,7 +102,7 @@ If you need to add more view file paths after initializing the Blade Service, th
 $bladeService->addViewPath('extra/view/path');
 ```
 
-> [!WARNING]
+> [!IMPORTANT]
 > For every unique view path added, performance will be affected. This is due to the fact that the Blade Service will have to search through all view paths to find the correct view file. Therefore, it is recommended to add as few view paths as possible.
 
 ## Testing
