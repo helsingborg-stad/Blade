@@ -7,6 +7,7 @@ use Mockery;
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
 use HelsingborgStad\GlobalBladeService\GlobalBladeService;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,6 +15,8 @@ use PHPUnit\Framework\TestCase;
  */
 class GlobalBladeServiceTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     /**
      * @testdox Class exists
      */
@@ -55,5 +58,21 @@ class GlobalBladeServiceTest extends TestCase
         $result = GlobalBladeService::getInstance(['viewPath'], 'cachePath');
 
         $this->assertInstanceOf(BladeServiceInterface::class, $result);
+    }
+
+    /**
+     * @testdox getInstance returns implementation of BladeServiceInterface on success
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testGetInstanceAddsViewPathsIfAlreadyInstantiated()
+    {
+        $bladeServiceMock = Mockery::mock('overload:' . BladeService::class, BladeServiceInterface::class);
+        $bladeServiceMock->shouldReceive('__construct')->once()->andReturn($bladeServiceMock);
+        $bladeServiceMock->shouldReceive('addViewPath')->once()->with('secondViewPath');
+        GlobalBladeService::getInstance(['firstViewPath'], 'cachePath');
+
+        // Call second time.
+        GlobalBladeService::getInstance(['secondViewPath'], 'cachePath');
     }
 }

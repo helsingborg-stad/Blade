@@ -7,7 +7,6 @@ use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
 use Illuminate\Container\Container;
 use Illuminate\View\FileViewFinder;
-use Illuminate\View\ViewFinderInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\TestDox;

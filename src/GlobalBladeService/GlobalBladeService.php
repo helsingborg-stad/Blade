@@ -30,6 +30,10 @@ class GlobalBladeService implements GlobalBladeServiceInterface
 
             $container                  = new Container();
             self::$bladeServiceInstance = new BladeService($viewPaths, $cachePath, $container);
+        } elseif (!empty($viewPaths)) {
+            foreach ($viewPaths as $viewPath) {
+                self::$bladeServiceInstance->addViewPath($viewPath);
+            }
         }
 
         return self::$bladeServiceInstance;
