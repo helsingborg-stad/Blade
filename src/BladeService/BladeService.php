@@ -137,9 +137,15 @@ class BladeService implements BladeServiceInterface
      * @param bool $prepend Whether to prepend the path.
      * @return void
      */
-    public function addViewPath(string $path, $prepend = true): void
+    public function addViewPath(string $path, $prepend = false): void
     {
-        $this->factory->addLocation($path);
+        if ($prepend) {
+            /** @var \Illuminate\View\FileViewFinder $finder */
+            $finder = $this->factory->getFinder();
+            $finder->prependLocation($path);
+        } else {
+            $this->factory->addLocation($path);
+        }
     }
 
     /**

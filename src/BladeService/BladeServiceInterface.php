@@ -2,7 +2,6 @@
 
 namespace HelsingborgStad\BladeService;
 
-use Closure;
 use Illuminate\Contracts\View\View;
 
 /**
@@ -43,13 +42,13 @@ interface BladeServiceInterface
     public function registerDirective(string $name, callable $handler): void;
 
     /**
-     * Register a view composer.
+     * Register a component.
      *
-     * @param string $views The views to apply the composer to.
-     * @param string $callback The callback function or class method to execute.
-     * @return array The registered composers.
+     * @param string|array $views The views to compose.
+     * @param \Closure|string $callback The callback function for the composer.
+     * @return array
      */
-    public function registerComponent(string $component, string $alias): array;
+    public function registerComponent($views, $callback): array;
 
     /**
      * Add a view path to the service.

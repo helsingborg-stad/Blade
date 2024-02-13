@@ -6,20 +6,34 @@ use DateTime;
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
 use Illuminate\Container\Container;
+use Illuminate\View\FileViewFinder;
+use Illuminate\View\ViewFinderInterface;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\TestDox;
 
 class BladeServiceTest extends \PHPUnit\Framework\TestCase
 {
-    private BladeServiceInterface $bladeService;
+    use MockeryPHPUnitIntegration;
+
+    private string $cachePath                    = 'tests/phpunit/tests/BladeService/cache';
+    private ?BladeServiceInterface $bladeService = null;
 
     public function setUp(): void
     {
-        $views     = ['tests/phpunit/tests/BladeService/views'];
-        $cachePath = 'tests/phpunit/tests/BladeService/cache';
-        $container = new Container();
+        $this->clearCache($this->cachePath);
+    }
 
-        $this->clearCache($cachePath);
-        $this->bladeService = new BladeService($views, $cachePath, $container);
+    private function getBladeService(): BladeServiceInterface
+    {
+        if (!($this->bladeService instanceof BladeServiceInterface)) {
+            $views     = ['tests/phpunit/tests/BladeService/views'];
+            $container = new Container();
+
+            $this->bladeService = new BladeService($views, $this->cachePath, $container);
+        }
+
+        return $this->bladeService;
     }
 
     private function clearCache(string $cachePath)
@@ -37,7 +51,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testBasicComponent()
     {
-        $output = $this->bladeService->makeView('basic')->render();
+        $output = $this->getBladeService()->makeView('basic')->render();
         $this->assertEquals('Hello World!', trim($output));
     }
 
@@ -46,7 +60,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testVariables()
     {
-        $output = $this->bladeService->makeView('variables', ['name' => 'John Doe'])->render();
+        $output = $this->getBladeService()->makeView('variables', ['name' => 'John Doe'])->render();
         $this->assertEquals('Hello John Doe!', trim($output));
     }
 
@@ -55,11 +69,11 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testDirective()
     {
-        $this->bladeService->registerDirective('datetime', function ($expression) {
+        $this->getBladeService()->registerDirective('datetime', function ($expression) {
             return "<?php echo with({$expression})->format('F d, Y'); ?>";
         });
 
-        $output = $this->bladeService->makeView('directive', ['birthday' => new DateTime('1983-09-28')])->render();
+        $output = $this->getBladeService()->makeView('directive', ['birthday' => new DateTime('1983-09-28')])->render();
         $this->assertEquals('Your birthday is September 28, 1983', trim($output));
     }
 
@@ -68,11 +82,11 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testComponentComposer()
     {
-        $this->bladeService->registerComponent('variables', function ($view) {
+        $this->getBladeService()->registerComponent('variables', function ($view) {
             $view->with('name', 'John Doe');
         });
 
-        $output = $this->bladeService->makeView('variables')->render();
+        $output = $this->getBladeService()->makeView('variables')->render();
         $this->assertEquals('Hello John Doe!', trim($output));
     }
 
@@ -81,13 +95,13 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testComponentDirective()
     {
-        $this->bladeService->registerComponentDirective('alias.source', 'sayHello');
+        $this->getBladeService()->registerComponentDirective('alias.source', 'sayHello');
 
-        $this->bladeService->registerComponent('alias.source', function ($view) {
+        $this->getBladeService()->registerComponent('alias.source', function ($view) {
             $view->with('name', 'World');
         });
 
-        $output = $this->bladeService->makeView('alias.usage')->render();
+        $output = $this->getBladeService()->makeView('alias.usage')->render();
         $this->assertEquals('Hello World!', trim($output));
     }
 
@@ -96,9 +110,31 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testAddViewPath()
     {
-        $this->bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views');
+        $this->getBladeService()->addViewPath('tests/phpunit/tests/BladeService/extra-views');
 
-        $output = $this->bladeService->makeView('extra')->render();
+        $output = $this->getBladeService()->makeView('extra')->render();
         $this->assertEquals('Hello Extra!', trim($output));
+    }
+
+    /**
+     * @testdox A view path can be prepended
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testAddViewPathPrepend()
+    {
+        $fileViewFinder = Mockery::mock(FileViewFinder::class);
+        $factoryMock    = Mockery::mock('overload:Illuminate\View\Factory');
+        $factoryMock->shouldReceive('getFinder')->andReturn($fileViewFinder);
+        $factoryMock->shouldReceive('setContainer');
+        $factoryMock->shouldReceive('share');
+        $prepend = true;
+
+        // Expectation
+        $fileViewFinder->shouldReceive('prependLocation')
+            ->once()
+            ->with('tests/phpunit/tests/BladeService/extra-views');
+
+        $this->getBladeService()->addViewPath('tests/phpunit/tests/BladeService/extra-views', $prepend);
     }
 }
