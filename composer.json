@@ -52,5 +52,6 @@
         "helsingborg-stad/phpcs": "^0.3.5",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6"
-    }
+    },
+    "version": "3.0.1"
 }
