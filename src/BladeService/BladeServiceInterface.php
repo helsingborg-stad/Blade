@@ -45,11 +45,11 @@ interface BladeServiceInterface
     /**
      * Register a view composer.
      *
-     * @param array|string $views The views to apply the composer to.
-     * @param Closure|string $callback The callback function or class method to execute.
+     * @param string $views The views to apply the composer to.
+     * @param string $callback The callback function or class method to execute.
      * @return array The registered composers.
      */
-    public function registerComponent($views, $callback): array;
+    public function registerComponent(string $component, string $alias): array;
 
     /**
      * Add a view path to the service.
