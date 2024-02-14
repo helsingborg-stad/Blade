@@ -12,4 +12,3 @@ tests/phpunit/.coverage
 
 # Exclude from ignore
 !.gitkeep
-cache

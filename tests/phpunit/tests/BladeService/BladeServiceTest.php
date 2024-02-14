@@ -56,7 +56,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testCachePathCanBeSetFromConstant()
     {
-        define('BLADE_CACHE_PATH', 'cache/path/set/from/constant');
+        define('BLADE_CACHE_PATH', 'tests/phpunit/tests/BladeService/cachePathFromConstant');
         $views     = ['tests/phpunit/tests/BladeService/views'];
         $container = new Container();
 
@@ -65,7 +65,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $cachePath          = $reflection->getProperty('cachePath');
         $cachePath->setAccessible(true);
 
-        $this->assertEquals('cache/path/set/from/constant', $cachePath->getValue($this->bladeService));
+        $this->assertEquals('tests/phpunit/tests/BladeService/cachePathFromConstant', $cachePath->getValue($this->bladeService));
     }
 
     /**
