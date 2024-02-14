@@ -62,11 +62,9 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $container = new Container();
 
         $this->bladeService = new BladeService($views, null, $container);
-        $reflection         = new \ReflectionClass($this->bladeService);
-        $cachePath          = $reflection->getProperty('cachePath');
-        $cachePath->setAccessible(true);
+        $cachePath          = $this->getBladeServicePrivateCachePathPropertyValue($this->bladeService);
 
-        $this->assertEquals($testCachePath, $cachePath->getValue($this->bladeService));
+        $this->assertEquals($testCachePath, $cachePath);
     }
 
     /**
@@ -79,11 +77,18 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $systemCachePath = sys_get_temp_dir() . '/blade-cache';
 
         $this->bladeService = new BladeService($views, null, $container);
-        $reflection         = new \ReflectionClass($this->bladeService);
-        $cachePath          = $reflection->getProperty('cachePath');
+        $cachePath          = $this->getBladeServicePrivateCachePathPropertyValue($this->bladeService);
+
+        $this->assertEquals($systemCachePath, $cachePath);
+    }
+
+    private function getBladeServicePrivateCachePathPropertyValue(BladeServiceInterface $bladeService)
+    {
+        $reflection = new \ReflectionClass($bladeService);
+        $cachePath  = $reflection->getProperty('cachePath');
         $cachePath->setAccessible(true);
 
-        $this->assertEquals($systemCachePath, $cachePath->getValue($this->bladeService));
+        return $cachePath->getValue($this->bladeService);
     }
 
     /**
