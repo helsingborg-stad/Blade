@@ -36,17 +36,6 @@ class GlobalBladeServiceTest extends TestCase
     }
 
     /**
-     * @testdox getInstance throws when not passing $cachePath on first call
-     */
-    public function testGetInstanceThrowsWhenMissingCachePath()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $viewPaths        = ['views'];
-        $invalidCachePath = '';
-        GlobalBladeService::getInstance($viewPaths, $invalidCachePath);
-    }
-
-    /**
      * @testdox getInstance returns implementation of BladeServiceInterface on success
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -61,7 +50,7 @@ class GlobalBladeServiceTest extends TestCase
     }
 
     /**
-     * @testdox getInstance returns implementation of BladeServiceInterface on success
+     * @testdox getInstance adds view paths if already instantiated
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */

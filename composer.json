@@ -51,6 +51,7 @@
     "require-dev": {
         "helsingborg-stad/phpcs": "^0.3.5",
         "mockery/mockery": "^1.6",
+        "php-mock/php-mock-mockery": "^1.4",
         "phpunit/phpunit": "^9.6"
     },
     "version": "3.0.1"

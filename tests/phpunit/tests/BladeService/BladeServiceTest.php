@@ -3,12 +3,13 @@
 namespace HelsingborgStad\Tests\BladeService;
 
 use DateTime;
+use Mockery;
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
 use Illuminate\Container\Container;
 use Illuminate\View\FileViewFinder;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use phpmock\mockery\PHPMockery;
 use PHPUnit\Framework\Attributes\TestDox;
 
 class BladeServiceTest extends \PHPUnit\Framework\TestCase
@@ -17,11 +18,6 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
 
     private string $cachePath                    = 'tests/phpunit/tests/BladeService/cache';
     private ?BladeServiceInterface $bladeService = null;
-
-    public function setUp(): void
-    {
-        $this->clearCache($this->cachePath);
-    }
 
     private function getBladeService(): BladeServiceInterface
     {
@@ -52,6 +48,81 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     {
         $output = $this->getBladeService()->makeView('basic')->render();
         $this->assertEquals('Hello World!', trim($output));
+    }
+
+    /**
+     * @testdox Cache path can be set from constant
+     * @runInSeparateProcess
+     */
+    public function testCachePathCanBeSetFromConstant()
+    {
+        define('BLADE_CACHE_PATH', 'cache/path/set/from/constant');
+        $views     = ['tests/phpunit/tests/BladeService/views'];
+        $container = new Container();
+
+        $this->bladeService = new BladeService($views, null, $container);
+        $reflection         = new \ReflectionClass($this->bladeService);
+        $cachePath          = $reflection->getProperty('cachePath');
+        $cachePath->setAccessible(true);
+
+        $this->assertEquals('cache/path/set/from/constant', $cachePath->getValue($this->bladeService));
+    }
+
+    /**
+     * @testdox Cache path defaults to system tmp dir
+     */
+    public function testCachePathDefaultsToSystemTmpDir()
+    {
+        $views           = ['tests/phpunit/tests/BladeService/views'];
+        $container       = new Container();
+        $systemCachePath = sys_get_temp_dir() . '/blade-cache';
+
+        $this->bladeService = new BladeService($views, null, $container);
+        $reflection         = new \ReflectionClass($this->bladeService);
+        $cachePath          = $reflection->getProperty('cachePath');
+        $cachePath->setAccessible(true);
+
+        $this->assertEquals($systemCachePath, $cachePath->getValue($this->bladeService));
+    }
+
+    /**
+     * @testdox Instantiating the BladeService throws if cache path does not exist and can not be created
+     * @runInSeparateProcess
+     */
+    public function testThrowsIfCachePathCanNotBeCreated()
+    {
+        // Ensure that folder can not be created.
+        $bladeServiceNamespace = '\HelsingborgStad\BladeService';
+        PHPMockery::mock($bladeServiceNamespace, "file_exists")->andReturn(false);
+        PHPMockery::mock($bladeServiceNamespace, "mkdir")->andReturn(false);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache path does not exist and could not be created');
+
+        $views     = ['tests/phpunit/tests/BladeService/views'];
+        $container = new Container();
+
+        $this->bladeService = new BladeService($views, null, $container);
+        Mockery::close();
+    }
+
+    /**
+     * @testdox Instantiating the BladeService throws if cache path is not writable
+     * @runInSeparateProcess
+     */
+    public function testThrowsIfCachePathIsNotWritable()
+    {
+        // Ensure that folder is not writable.
+        $bladeServiceNamespace = '\HelsingborgStad\BladeService';
+        PHPMockery::mock($bladeServiceNamespace, "is_writable")->andReturn(false);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache path is not a directory or is not writable');
+
+        $views     = ['tests/phpunit/tests/BladeService/views'];
+        $container = new Container();
+
+        $this->bladeService = new BladeService($views, null, $container);
     }
 
     /**
