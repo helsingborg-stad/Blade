@@ -32,6 +32,13 @@ composer require helsingborg-stad/Blade
 
 ## Usage
 
+### Configuration
+
+#### Cache path
+* The cache path can be set by passing the path to the constructor of the BladeService.
+* If no cache path is set, the Blade Service will use the system's temporary directory.
+* The cache path can be overriden by defining the `BLADE_CACHE_PATH` environment constant.
+
 ### Initialize blade engine:
 This can be done either as a local instance or as a global reusable instance. The global instance is recommended better performance and less memory usage.
 
@@ -39,8 +46,7 @@ This can be done either as a local instance or as a global reusable instance. Th
 ```php
 $viewPaths    = ['path/to/view/files'];
 $cachePath    = 'path/to/cache/files';
-$container    = new \Illuminate\Container\Container();
-$bladeService = new BladeService($viewPaths, $cachePath, $container);
+$bladeService = new BladeService($viewPaths, $cachePath);
 ```
 
 #### Globally (for convenient reuse)

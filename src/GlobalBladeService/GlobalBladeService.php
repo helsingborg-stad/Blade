@@ -4,7 +4,6 @@ namespace HelsingborgStad\GlobalBladeService;
 
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
-use Illuminate\Container\Container;
 use InvalidArgumentException;
 
 /**
@@ -23,13 +22,11 @@ class GlobalBladeService implements GlobalBladeServiceInterface
      * @param string|null $cachePath The cache path.
      * @return BladeServiceInterface The instance of the BladeService.
      */
-    public static function getInstance(array $viewPaths = [], string $cachePath = ''): BladeServiceInterface
+    public static function getInstance(array $viewPaths = [], ?string $cachePath = null): BladeServiceInterface
     {
         if (!isset(self::$bladeServiceInstance)) {
-            self::validateRequiredInputParameters($viewPaths, $cachePath);
-
-            $container                  = new Container();
-            self::$bladeServiceInstance = new BladeService($viewPaths, $cachePath, $container);
+            self::validateRequiredInputParameters($viewPaths);
+            self::$bladeServiceInstance = new BladeService($viewPaths, $cachePath);
         } elseif (!empty($viewPaths)) {
             foreach ($viewPaths as $viewPath) {
                 self::$bladeServiceInstance->addViewPath($viewPath);
@@ -43,24 +40,15 @@ class GlobalBladeService implements GlobalBladeServiceInterface
      * Validates the required input parameters for the getInstance method.
      *
      * @param array $viewPaths An array containing at least one view path.
-     * @param string $cachePath The path to the cache folder.
      * @throws InvalidArgumentException If the viewPaths parameter is
-     * not an array or if the cachePath parameter is not a string.
+     * not an array of is empty.
      */
-    private static function validateRequiredInputParameters($viewPaths, $cachePath): void
+    private static function validateRequiredInputParameters($viewPaths): void
     {
         if (!is_array($viewPaths) || empty($viewPaths)) {
             $message = <<<EOF
             The \$viewPaths parameter must be an array 
             containing at least one view path when calling getInstance the first time.
-            EOF;
-            throw new InvalidArgumentException($message);
-        }
-
-        if (!is_string($cachePath) || empty($cachePath)) {
-            $message = <<<EOF
-            The \$cachePath parameter must be a string
-            containing the path to the cache folder when calling getInstance the first time.
             EOF;
             throw new InvalidArgumentException($message);
         }

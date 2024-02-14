@@ -2,7 +2,8 @@
 
 namespace HelsingborgStad\BladeService;
 
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\Container as ContainerInterface;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
@@ -10,6 +11,7 @@ use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Factory;
 use Illuminate\View\ViewServiceProvider;
+use InvalidArgumentException;
 
 /**
  * Class BladeServiceInstance
@@ -18,20 +20,69 @@ use Illuminate\View\ViewServiceProvider;
  */
 class BladeService implements BladeServiceInterface
 {
+    private ContainerInterface $container;
     private Factory $factory;
     private BladeCompiler $compiler;
+    private array $viewPaths;
+    private ?string $cachePath;
 
     /**
      * Constructor for the BladeService class.
      *
      * @param array $viewPaths The array of view paths.
-     * @param string $cachePath The path to the cache directory.
-     * @param Container $container The dependency injection container.
+     * @param ?string $cachePath The path to the cache directory. If not provided, the default cache path will be used.
+     * If the default cache path is not available, caching will be disabled. To override the cache path, define the
+     * constant 'BLADE_CACHE_PATH' with the desired cache path.
      */
-    public function __construct(array $viewPaths, string $cachePath, Container $container)
+    public function __construct(array $viewPaths, ?string $cachePath = null)
     {
-        $this->registerBindings($container);
-        $this->initializeFactoryAndCompiler($viewPaths, $cachePath, $container);
+        $this->viewPaths = $viewPaths;
+        $this->container = new Container();
+        $this->setCachePath($cachePath);
+        $this->registerBindings();
+        $this->initializeFactoryAndCompiler();
+    }
+
+    /**
+     * Sets the cache path for Blade templates.
+     *
+     * If the constant 'BLADE_CACHE_PATH' is defined and not empty, it will be used as the cache path.
+     * Otherwise, if the $cachePath parameter is not empty, it will be used as the cache path.
+     * If both the constant and the parameter are empty, a default cache path will be used.
+     *
+     * If the cache path does not exist, it will be created with the default permissions of 0755.
+     * If the cache path cannot be created, an InvalidArgumentException will be thrown.
+     *
+     * If the cache path is not a directory or is not writable, an InvalidArgumentException will be thrown.
+     *
+     * @param string|null $cachePath The cache path to set. If null, the default cache path will be used.
+     * @throws InvalidArgumentException If the cache path does not exist and could not be created,
+     * or if the cache path is not a directory or is not writable, or if the cache path is empty.
+     */
+    private function setCachePath(?string $cachePath)
+    {
+        if (defined('BLADE_CACHE_PATH') && !empty(constant('BLADE_CACHE_PATH'))) {
+            $cachePath = constant('BLADE_CACHE_PATH');
+        } elseif (!empty($cachePath)) {
+            $cachePath = $cachePath;
+        } else {
+            $cachePath = sys_get_temp_dir() . '/blade-cache';
+        }
+
+        if (!file_exists($cachePath)) {
+            $cachePathPermissions = 0755;
+            $couldCreateCachePath = mkdir($cachePath, $cachePathPermissions, true);
+
+            if (!$couldCreateCachePath) {
+                throw new InvalidArgumentException('Cache path does not exist and could not be created');
+            }
+        }
+
+        if (!is_dir($cachePath) || !is_writable($cachePath)) {
+            throw new InvalidArgumentException('Cache path is not a directory or is not writable');
+        }
+
+        $this->cachePath = $cachePath;
     }
 
     /**
@@ -40,10 +91,10 @@ class BladeService implements BladeServiceInterface
      * @param Container $container The IoC container instance.
      * @return void
      */
-    private function registerBindings(Container $container): void
+    private function registerBindings(): void
     {
-        $container->bindIf('files', Filesystem::class, true);
-        $container->bindIf('events', Dispatcher::class, true);
+        $this->container->bindIf('files', Filesystem::class, true);
+        $this->container->bindIf('events', Dispatcher::class, true);
     }
 
     /**
@@ -54,22 +105,22 @@ class BladeService implements BladeServiceInterface
      * @param Container $container The IoC container instance.
      * @return void
      */
-    private function initializeFactoryAndCompiler(array $viewPaths, string $cachePath, Container $container): void
+    private function initializeFactoryAndCompiler(): void
     {
-        $container->bindIf('config', function () use ($viewPaths, $cachePath) {
+        $this->container->bindIf('config', function () {
             return [
-            'view.paths'    => $viewPaths,
-            'view.compiled' => $cachePath,
+            'view.paths'    => $this->viewPaths,
+            'view.compiled' => $this->cachePath,
             ];
         }, true);
 
-        $viewServiceProvider = new ViewServiceProvider($container);
+        $viewServiceProvider = new ViewServiceProvider($this->container);
         $viewServiceProvider->register();
 
-        $this->factory  = $container->get('view');
-        $this->compiler = $container->get('blade.compiler');
+        $this->factory  = $this->container->get('view');
+        $this->compiler = $this->container->get('blade.compiler');
 
-        Facade::setFacadeApplication($container);
+        Facade::setFacadeApplication($this->container);
     }
 
     /**
@@ -107,11 +158,13 @@ class BladeService implements BladeServiceInterface
      */
     private function registerComponentDirectiveOpeningTag(string $component, string $alias): void
     {
-        $this->compiler->directive($alias, function ($expression) use ($component) {
+        $this->registerDirective($alias, function ($expression) use ($component) {
+            // @codeCoverageIgnoreStart
             $data = isset($expression) ? "$expression" : "[]";
             return <<<PHP
                 <?php \$__env->startComponent('{$component}', {$data}); ob_start(); ?>
             PHP;
+            // @codeCoverageIgnoreEnd
         });
     }
 
@@ -123,7 +176,7 @@ class BladeService implements BladeServiceInterface
      */
     private function registerComponentDirectiveClosingTag(string $alias): void
     {
-        $this->compiler->directive("end{$alias}", function () {
+        $this->registerDirective("end{$alias}", function () {
             return <<<PHP
                 <?php echo ob_get_clean(); echo \$__env->renderComponent(); ?>
             PHP;
