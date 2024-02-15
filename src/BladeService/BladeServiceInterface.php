@@ -58,4 +58,13 @@ interface BladeServiceInterface
      * @return void
      */
     public function addViewPath(string $path, $prepend = true): void;
+
+    /**
+     * Add an array of view paths to the service.
+     *
+     * @param string[] $path The paths to add.
+     * @param bool $prepend Whether to prepend the paths to the existing paths.
+     * @return void
+     */
+    public function addViewPaths(array $paths, $prepend = true): void;
 }

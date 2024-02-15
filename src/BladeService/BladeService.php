@@ -200,6 +200,20 @@ class BladeService implements BladeServiceInterface
     }
 
     /**
+     * Add an array of view paths to the service.
+     *
+     * @param string[] $path The paths to add.
+     * @param bool $prepend Whether to prepend the paths.
+     * @return void
+     */
+    public function addViewPaths(array $paths, $prepend = true): void
+    {
+        foreach ($paths as $path) {
+            $this->addViewPath($path, $prepend);
+        }
+    }
+
+    /**
      * Prepend a view path to the file view finder.
      *
      * @param string $path The path to prepend.

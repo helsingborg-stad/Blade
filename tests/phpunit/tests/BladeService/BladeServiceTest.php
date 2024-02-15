@@ -213,4 +213,15 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->getBladeService()->addViewPath('tests/phpunit/tests/BladeService/extra-views', $prepend);
     }
+
+    /**
+     * @testdox Multiple view paths can be added
+     */
+    public function testAddViewPaths()
+    {
+        $this->getBladeService()->addViewPaths(['tests/phpunit/tests/BladeService/extra-views']);
+
+        $output = $this->getBladeService()->makeView('extra')->render();
+        $this->assertEquals('Hello Extra!', trim($output));
+    }
 }
