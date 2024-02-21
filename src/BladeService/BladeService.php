@@ -33,6 +33,7 @@ class BladeService implements BladeServiceInterface
      *
      * @param array $viewPaths The array of view paths.
      * @param ?string $cachePath The path to the cache directory. If not provided, the default cache path will be used.
+     * @param array $fileExtensions The array of file extensions to use for Blade views. Defaults to ['blade.php'].
      * If the default cache path is not available, caching will be disabled. To override the cache path, define the
      * constant 'BLADE_CACHE_PATH' with the desired cache path.
      */
