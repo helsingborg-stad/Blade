@@ -117,10 +117,24 @@ class BladeService implements BladeServiceInterface
         $viewServiceProvider = new ViewServiceProvider($this->container);
         $viewServiceProvider->register();
 
-        $this->factory  = $this->container->get('view');
+        $this->factory  = $this->createFactory();
         $this->compiler = $this->container->get('blade.compiler');
 
         Facade::setFacadeApplication($this->container);
+    }
+
+    /**
+     * Creates a new instance of the Blade Factory.
+     *
+     * @return Factory The newly created Blade Factory instance.
+     */
+    private function createFactory(): Factory
+    {
+        return new Factory(
+            $this->container->get('view.engine.resolver'),
+            $this->container->get('view.finder'),
+            $this->container->get('events')
+        );
     }
 
     /**
@@ -129,10 +143,17 @@ class BladeService implements BladeServiceInterface
      * @param string $view The name of the view to render.
      * @param array $data The data to pass to the view.
      * @param array $mergeData The data to merge with the view data.
+     * @param string|null $viewPath The path to the view.
      * @return View The rendered view.
      */
-    public function makeView(string $view, array $data = [], array $mergeData = []): View
+    public function makeView(string $view, array $data = [], array $mergeData = [], ?string $viewPath = null): View
     {
+        if ($viewPath) {
+            $factory = $this->createFactory();
+            $factory->addLocation($viewPath);
+            return $factory->make($view, $data, $mergeData);
+        }
+
         return $this->factory->make($view, $data, $mergeData);
     }
 
