@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
 use Illuminate\View\ViewServiceProvider;
 use InvalidArgumentException;
 
@@ -25,6 +26,7 @@ class BladeService implements BladeServiceInterface
     private BladeCompiler $compiler;
     private array $viewPaths;
     private ?string $cachePath;
+    private array $fileExtensions;
 
     /**
      * Constructor for the BladeService class.
@@ -34,10 +36,11 @@ class BladeService implements BladeServiceInterface
      * If the default cache path is not available, caching will be disabled. To override the cache path, define the
      * constant 'BLADE_CACHE_PATH' with the desired cache path.
      */
-    public function __construct(array $viewPaths, ?string $cachePath = null)
+    public function __construct(array $viewPaths, ?string $cachePath = null, array $fileExtensions = ['blade.php'])
     {
-        $this->viewPaths = $viewPaths;
-        $this->container = new Container();
+        $this->fileExtensions = $fileExtensions;
+        $this->viewPaths      = $viewPaths;
+        $this->container      = new Container();
         $this->setCachePath($cachePath);
         $this->registerBindings();
         $this->initializeFactoryAndCompiler();
@@ -130,11 +133,10 @@ class BladeService implements BladeServiceInterface
      */
     private function createFactory(): Factory
     {
-        return new Factory(
-            $this->container->get('view.engine.resolver'),
-            $this->container->get('view.finder'),
-            $this->container->get('events')
-        );
+        $engines = $this->container->get('view.engine.resolver');
+        $finder  = new FileViewFinder($this->container->get('files'), $this->viewPaths, $this->fileExtensions);
+        $events  = $this->container->get('events');
+        return new Factory($engines, $finder, $events);
     }
 
     /**
@@ -151,6 +153,11 @@ class BladeService implements BladeServiceInterface
         if ($viewPath) {
             $factory = $this->createFactory();
             $factory->addLocation($viewPath);
+
+            /** @var \Illuminate\View\FileViewFinder $finder */
+            $finder = $factory->getFinder();
+            $finder->prependLocation($viewPath);
+
             return $factory->make($view, $data, $mergeData);
         }
 

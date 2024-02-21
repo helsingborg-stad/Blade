@@ -22,10 +22,8 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     private function getBladeService(): BladeServiceInterface
     {
         if (!($this->bladeService instanceof BladeServiceInterface)) {
-            $views     = ['tests/phpunit/tests/BladeService/views'];
-            $container = new Container();
-
-            $this->bladeService = new BladeService($views, $this->cachePath, $container);
+            $views              = ['tests/phpunit/tests/BladeService/views'];
+            $this->bladeService = new BladeService($views, $this->cachePath);
         }
 
         return $this->bladeService;
@@ -61,7 +59,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $views     = ['tests/phpunit/tests/BladeService/views'];
         $container = new Container();
 
-        $this->bladeService = new BladeService($views, null, $container);
+        $this->bladeService = new BladeService($views, null);
         $cachePath          = $this->getBladeServicePrivateCachePathPropertyValue($this->bladeService);
 
         $this->assertEquals($testCachePath, $cachePath);
@@ -76,10 +74,23 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $container       = new Container();
         $systemCachePath = sys_get_temp_dir() . '/blade-cache';
 
-        $this->bladeService = new BladeService($views, null, $container);
+        $this->bladeService = new BladeService($views, null);
         $cachePath          = $this->getBladeServicePrivateCachePathPropertyValue($this->bladeService);
 
         $this->assertEquals($systemCachePath, $cachePath);
+    }
+
+    /**
+     * @testdox Custom file extensions can be set
+     */
+    public function testCustomFileExtensions()
+    {
+        $views          = ['tests/phpunit/tests/BladeService/views'];
+        $fileExtensions = ['foo.php'];
+        $bladeService   = new BladeService($views, null, $fileExtensions);
+
+        $rendered = $bladeService->makeView('extension')->render();
+        $this->assertEquals('Hello extension.foo.php!', trim($rendered));
     }
 
     private function getBladeServicePrivateCachePathPropertyValue(BladeServiceInterface $bladeService)
@@ -108,7 +119,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $views     = ['tests/phpunit/tests/BladeService/views'];
         $container = new Container();
 
-        $this->bladeService = new BladeService($views, null, $container);
+        $this->bladeService = new BladeService($views, null);
         Mockery::close();
     }
 
@@ -128,7 +139,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $views     = ['tests/phpunit/tests/BladeService/views'];
         $container = new Container();
 
-        $this->bladeService = new BladeService($views, null, $container);
+        $this->bladeService = new BladeService($views, null);
     }
 
     /**
