@@ -75,6 +75,13 @@ $viewFile = 'foo.blade.php';
 $html = $bladeService->makeView($viewFile, ['name' => 'John Doe'])->render();
 ```
 
+#### Render with specific view path
+This enables you to temporarily use a specific view path without storing it in the Blade Service.
+```php
+$viewFile = 'foo.blade.php';
+$html = $bladeService->makeView($viewFile, ['name' => 'John Doe'], [], 'specific/view/path')->render();
+```
+
 
 ### Register a custom directive
 

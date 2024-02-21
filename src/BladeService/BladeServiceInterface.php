@@ -19,9 +19,10 @@ interface BladeServiceInterface
      * @param string $view The name of the view to render.
      * @param array $data The data to pass to the view.
      * @param array $mergeData The data to merge with the view data.
+     * @param string|null $viewPath The path to the view.
      * @return View The rendered view.
      */
-    public function makeView(string $view, array $data = [], array $mergeData = []): View;
+    public function makeView(string $view, array $data = [], array $mergeData = [], ?string $viewPath = null): View;
 
     /**
      * Create a component directive with the given alias.

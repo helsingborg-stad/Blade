@@ -141,6 +141,29 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @testdox A view can be rendered with a specific view path
+     */
+    public function testViewPath()
+    {
+        $specificViewPath           = 'tests/phpunit/tests/BladeService/extra-views';
+        $outputWithSpecificViewPath = $this->getBladeService()->makeView('extra', [], [], $specificViewPath)->render();
+        $this->assertEquals('Hello Extra!', trim($outputWithSpecificViewPath));
+    }
+
+    /**
+     * @testdox A view can be rendered with a specific view path but that view path is not stored for later use
+     */
+    public function testViewPathNotStored()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('View [extra] not found.');
+        $specificViewPath = 'tests/phpunit/tests/BladeService/extra-views';
+
+        $this->getBladeService()->makeView('extra', [], [], $specificViewPath)->render();
+        $this->getBladeService()->makeView('extra', [], [])->render();
+    }
+
+    /**
      * @testdox Directive can be registered
      */
     public function testDirective()
