@@ -224,6 +224,7 @@ class BladeService implements BladeServiceInterface
         if ($prepend) {
             $this->prependViewPath($path);
         } else {
+            $this->viewPaths[] = $path;
             $this->factory->addLocation($path);
         }
     }
@@ -235,7 +236,7 @@ class BladeService implements BladeServiceInterface
      * @param bool $prepend Whether to prepend the paths.
      * @return void
      */
-    public function addViewPaths(array $paths, $prepend = true): void
+    public function addViewPaths(array $paths, $prepend = false): void
     {
         foreach ($paths as $path) {
             $this->addViewPath($path, $prepend);
@@ -250,6 +251,8 @@ class BladeService implements BladeServiceInterface
      */
     private function prependViewPath(string $path): void
     {
+        $this->viewPaths = array_merge([$path], $this->viewPaths);
+
         /** @var \Illuminate\View\FileViewFinder $finder */
         $finder = $this->factory->getFinder();
         $finder->prependLocation($path);

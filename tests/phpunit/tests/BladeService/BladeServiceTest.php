@@ -6,7 +6,6 @@ use DateTime;
 use Mockery;
 use HelsingborgStad\BladeService\BladeService;
 use HelsingborgStad\BladeService\BladeServiceInterface;
-use Illuminate\Container\Container;
 use Illuminate\View\FileViewFinder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use phpmock\mockery\PHPMockery;
@@ -56,8 +55,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     {
         $testCachePath = 'tests/phpunit/tests/BladeService/cachePathFromConstant';
         define('BLADE_CACHE_PATH', $testCachePath);
-        $views     = ['tests/phpunit/tests/BladeService/views'];
-        $container = new Container();
+        $views = ['tests/phpunit/tests/BladeService/views'];
 
         $this->bladeService = new BladeService($views, null);
         $cachePath          = $this->getBladeServicePrivateCachePathPropertyValue($this->bladeService);
@@ -71,7 +69,6 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     public function testCachePathDefaultsToSystemTmpDir()
     {
         $views           = ['tests/phpunit/tests/BladeService/views'];
-        $container       = new Container();
         $systemCachePath = sys_get_temp_dir() . '/blade-cache';
 
         $this->bladeService = new BladeService($views, null);
@@ -116,8 +113,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Cache path does not exist and could not be created');
 
-        $views     = ['tests/phpunit/tests/BladeService/views'];
-        $container = new Container();
+        $views = ['tests/phpunit/tests/BladeService/views'];
 
         $this->bladeService = new BladeService($views, null);
         Mockery::close();
@@ -136,8 +132,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Cache path is not a directory or is not writable');
 
-        $views     = ['tests/phpunit/tests/BladeService/views'];
-        $container = new Container();
+        $views = ['tests/phpunit/tests/BladeService/views'];
 
         $this->bladeService = new BladeService($views, null);
     }
@@ -257,5 +252,41 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
 
         $output = $this->getBladeService()->makeView('extra')->render();
         $this->assertEquals('Hello Extra!', trim($output));
+    }
+
+    /**
+     * @testdox View paths are stored as class property
+     */
+    public function testViewPathsAreStoredAsClassProperty()
+    {
+        $bladeService = $this->getBladeService();
+        $bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views');
+
+        $reflection = new \ReflectionClass($bladeService);
+        $viewPaths  = $reflection->getProperty('viewPaths');
+        $viewPaths->setAccessible(true);
+
+        $this->assertEquals([
+            'tests/phpunit/tests/BladeService/views',
+            'tests/phpunit/tests/BladeService/extra-views',
+        ], $viewPaths->getValue($bladeService));
+    }
+
+    /**
+     * @testdox View paths are prepended on the class property
+     */
+    public function testViewPathsArePrependedOnTheClassProperty()
+    {
+        $bladeService = $this->getBladeService();
+        $bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views', true);
+
+        $reflection = new \ReflectionClass($bladeService);
+        $viewPaths  = $reflection->getProperty('viewPaths');
+        $viewPaths->setAccessible(true);
+
+        $this->assertEquals([
+            'tests/phpunit/tests/BladeService/extra-views',
+            'tests/phpunit/tests/BladeService/views',
+        ], $viewPaths->getValue($bladeService));
     }
 }
