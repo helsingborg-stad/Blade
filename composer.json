@@ -54,5 +54,5 @@
         "php-mock/php-mock-mockery": "^1.4",
         "phpunit/phpunit": "^9.6"
     },
-    "version": "3.4.1"
+    "version": "3.4.2"
 }
