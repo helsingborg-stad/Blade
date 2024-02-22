@@ -142,7 +142,11 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
      */
     public function testVariables()
     {
-        $output = $this->getBladeService()->makeView('variables', ['name' => 'John Doe'])->render();
+        $output = $this
+            ->getBladeService()
+            ->makeView('variables', ['name' => 'John Doe'])
+            ->render();
+
         $this->assertEquals('Hello John Doe!', trim($output));
     }
 
@@ -152,7 +156,11 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     public function testViewPath()
     {
         $specificViewPath           = 'tests/phpunit/tests/BladeService/extra-views';
-        $outputWithSpecificViewPath = $this->getBladeService()->makeView('extra', [], [], $specificViewPath)->render();
+        $outputWithSpecificViewPath = $this
+            ->getBladeService()
+            ->makeView('extra', [], [], $specificViewPath)
+            ->render();
+
         $this->assertEquals('Hello Extra!', trim($outputWithSpecificViewPath));
     }
 
@@ -162,7 +170,11 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     public function testAddMultipleViewPaths()
     {
         $specificViewPath           = 'tests/phpunit/tests/BladeService/extra-views';
-        $outputWithSpecificViewPath = $this->getBladeService()->makeView('extra', [], [], [$specificViewPath])->render();
+        $outputWithSpecificViewPath = $this
+            ->getBladeService()
+            ->makeView('extra', [], [], [$specificViewPath])
+            ->render();
+
         $this->assertEquals('Hello Extra!', trim($outputWithSpecificViewPath));
     }
 
