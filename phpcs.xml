@@ -4,6 +4,7 @@
     <file>./tests/phpunit</file>
     <exclude-pattern>./tests/phpunit/tests/*/cache</exclude-pattern>
     <exclude-pattern>./tests/phpunit/tests/*/*.blade.php</exclude-pattern>
+    <exclude-pattern>./tests/phpunit/tests/*/*.foo.php</exclude-pattern>
 
     <rule ref="Hbg-WordPress">
         <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
