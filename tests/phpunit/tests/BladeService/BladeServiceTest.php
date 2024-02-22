@@ -253,4 +253,40 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         $output = $this->getBladeService()->makeView('extra')->render();
         $this->assertEquals('Hello Extra!', trim($output));
     }
+
+    /**
+     * @testdox View paths are stored as class property
+     */
+    public function testViewPathsAreStoredAsClassProperty()
+    {
+        $bladeService = $this->getBladeService();
+        $bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views');
+
+        $reflection = new \ReflectionClass($bladeService);
+        $viewPaths  = $reflection->getProperty('viewPaths');
+        $viewPaths->setAccessible(true);
+
+        $this->assertEquals([
+            'tests/phpunit/tests/BladeService/views',
+            'tests/phpunit/tests/BladeService/extra-views',
+        ], $viewPaths->getValue($bladeService));
+    }
+
+    /**
+     * @testdox View paths are prepended on the class property
+     */
+    public function testViewPathsArePrependedOnTheClassProperty()
+    {
+        $bladeService = $this->getBladeService();
+        $bladeService->addViewPath('tests/phpunit/tests/BladeService/extra-views', true);
+
+        $reflection = new \ReflectionClass($bladeService);
+        $viewPaths  = $reflection->getProperty('viewPaths');
+        $viewPaths->setAccessible(true);
+
+        $this->assertEquals([
+            'tests/phpunit/tests/BladeService/extra-views',
+            'tests/phpunit/tests/BladeService/views',
+        ], $viewPaths->getValue($bladeService));
+    }
 }

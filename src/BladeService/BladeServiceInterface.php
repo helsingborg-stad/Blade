@@ -67,5 +67,5 @@ interface BladeServiceInterface
      * @param bool $prepend Whether to prepend the paths to the existing paths.
      * @return void
      */
-    public function addViewPaths(array $paths, $prepend = true): void;
+    public function addViewPaths(array $paths, $prepend = false): void;
 }
