@@ -157,6 +157,16 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @testdox makeView() can be called with multiple view paths
+     */
+    public function testAddMultipleViewPaths()
+    {
+        $specificViewPath           = 'tests/phpunit/tests/BladeService/extra-views';
+        $outputWithSpecificViewPath = $this->getBladeService()->makeView('extra', [], [], [$specificViewPath])->render();
+        $this->assertEquals('Hello Extra!', trim($outputWithSpecificViewPath));
+    }
+
+    /**
      * @testdox A view can be rendered with a specific view path but that view path is not stored for later use
      */
     public function testViewPathNotStored()
