@@ -54,7 +54,7 @@ class BladeService implements BladeServiceInterface
      * Otherwise, if the $cachePath parameter is not empty, it will be used as the cache path.
      * If both the constant and the parameter are empty, a default cache path will be used.
      *
-     * If the cache path does not exist, it will be created with the default permissions of 0755.
+     * If the cache path does not exist, it will be created with the default permissions of 0775.
      * If the cache path cannot be created, an InvalidArgumentException will be thrown.
      *
      * If the cache path is not a directory or is not writable, an InvalidArgumentException will be thrown.
@@ -74,7 +74,7 @@ class BladeService implements BladeServiceInterface
         }
 
         if (!file_exists($cachePath)) {
-            $cachePathPermissions = 0755;
+            $cachePathPermissions = 0775;
             $couldCreateCachePath = mkdir($cachePath, $cachePathPermissions, true);
 
             if (!$couldCreateCachePath) {
