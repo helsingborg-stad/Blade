@@ -126,6 +126,17 @@ $bladeService->prependViewPath('extra/view/path', true);
 > [!IMPORTANT]
 > For every unique view path added, performance will be affected. This is due to the fact that the Blade Service will have to search through all view paths to find the correct view file. Therefore, it is recommended to add as few view paths as possible.
 
+## Error handling
+This package offers a convenient solution for swiftly addressing issues that arise within a function called in a view or a syntax error directly within a file. It provides a function to visually display the error, which proves particularly useful during the development process. To optimize development speed and efficiency, it's advisable to implement an error handler when invoking makeView, ensuring smooth troubleshooting whenever errors occur.
+
+```php
+try {
+    return $bladeService->makeView($viewFile, ['name' => 'John Doe'], [], 'specific/view/path')->render();
+} catch (Throwable $e) {
+    $bladeService->errorHandler($e)->print();
+}
+```
+
 ## Testing
 
 ### Unit tests

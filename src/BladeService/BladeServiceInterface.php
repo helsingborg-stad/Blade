@@ -3,6 +3,7 @@
 namespace HelsingborgStad\BladeService;
 
 use Illuminate\Contracts\View\View;
+use Throwable;
 
 /**
  * Interface BladeService
@@ -68,4 +69,22 @@ interface BladeServiceInterface
      * @return void
      */
     public function addViewPaths(array $paths, $prepend = false): void;
+
+    /**
+     * Returns a class instance of the Error class. Able to pretty print errors.
+     *
+     * @param Throwable $e An instance of the Throwable class.
+     * @return Error class instance.
+     */
+    public function errorHandler(Throwable $e);
+
+    /**
+     * Get the view paths.
+     */
+    public function getViewPaths(): array;
+
+    /**
+     * Get the cache path.
+     */
+    public function getCachePath(): ?string;
 }

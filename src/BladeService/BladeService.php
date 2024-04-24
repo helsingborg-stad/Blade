@@ -13,6 +13,8 @@ use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Illuminate\View\ViewServiceProvider;
 use InvalidArgumentException;
+use HelsingborgStad\BladeError\BladeError;
+use Throwable;
 
 /**
  * Class BladeServiceInstance
@@ -286,5 +288,38 @@ class BladeService implements BladeServiceInterface
     public function registerComponent($views, $callback): array
     {
         return $this->factory->composer($views, $callback);
+    }
+
+    /**
+     * Returns the error handler.
+     *
+     * @param Throwable $e The error object.
+     * @return Error The error handler.
+     */
+    public function errorHandler(Throwable $e): BladeError
+    {
+        $bladeError =  new BladeError($this);
+        $bladeError->setThrowable($e);
+        return $bladeError;
+    }
+
+    /**
+     * Get the view paths.
+     * 
+     * @return array The view paths.
+     */
+    public function getViewPaths(): array
+    {
+        return $this->viewPaths;
+    }
+
+    /**
+     * Get the cache path.
+     * 
+     * @return string|null The cache path.
+     */
+    public function getCachePath(): ?string
+    {
+        return $this->cachePath;
     }
 }
