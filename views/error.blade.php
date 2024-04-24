@@ -76,11 +76,6 @@
       </td>
   </tr>
   <tr>
-  <td><strong>Stacktrace:</strong></td>
-      <td class="stacktrace">
-          <pre>{{ $stacktrace }}</pre>
-      </td>
-  </tr>
   @if($viewPaths)
   <tr>
       <td><strong>View paths:</strong></td>
@@ -93,4 +88,9 @@
       <td>{{ $cachePath }}</td>
   </tr>
   @endif
+  <td><strong>Stacktrace:</strong></td>
+      <td class="stacktrace">
+          <pre>{{ $stacktrace }}</pre>
+      </td>
+  </tr>
 </table>
