@@ -4,7 +4,7 @@ namespace HelsingborgStad\BladeError;
 
 use Throwable;
 use Exception;
-use HelsingborgStad\BladeService\BladeService as BladeErrorRenderer;
+use HelsingborgStad\BladeService\BladeService;
 
 /**
  * Class BladeServiceInstance
@@ -13,21 +13,36 @@ use HelsingborgStad\BladeService\BladeService as BladeErrorRenderer;
  */
 class BladeError implements BladeErrorInterface
 {
-  public function __construct(private Throwable $e, private array $viewPaths = [], private array $viewData = []){}
+  private Throwable $thrownError;
+
+  public function __construct(private BladeService $blade){}
 
   public function print(): void 
   {
-    $errorTemplateViewPath = __DIR__ . "/../../views/";
-    $renderer = new BladeErrorRenderer([$errorTemplateViewPath]);
-    echo $renderer->makeView('error', [
-      'message' => $this->getMessage(),
-      'line' => $this->getLine(),
-      'source' => $this->getSource(),
-      'code' => $this->getCodeSnippet(),
-      'stacktrace' => $this->getStackTrace(),
-      'viewPaths' => implode(PHP_EOL, $this->viewPaths ?? []),
-      'viewData' => $this->viewData ?? []
-    ])->render();
+    echo $this->blade->makeView(
+      'error',
+      [
+        'message' => $this->getMessage(),
+        'line' => $this->getLine(),
+        'source' => $this->getSource(),
+        'code' => $this->getCodeSnippet(),
+        'stacktrace' => $this->getStackTrace(),
+        'viewPaths' => implode(PHP_EOL, $this->blade->getViewPaths()),
+        'cachePath' => $this->blade->getCachePath()
+      ],
+      [],
+      __DIR__ . "/../../views/"
+    )->render();
+  }
+
+  public function setThrowable(Throwable $e): void
+  {
+    $this->thrownError = $e;
+  }
+
+  public function getThrowable(): Throwable
+  {
+    return $this->thrownError;
   }
 
   private function getCodeSnippet(): array
@@ -44,16 +59,16 @@ class BladeError implements BladeErrorInterface
       return $codeSnippet;
     }
 
-    if($this->e->getFile()) {
-      return file($this->e->getFile());
+    if($this->getThrowable()->getFile()) {
+      return file($this->getThrowable()->getFile());
     }
     throw new Exception('No file found in error object.');
   }
 
   private function getFileContentsAsArray(): array
   {
-    if($this->e->getFile()) {
-      return file($this->e->getFile());
+    if($this->getThrowable()->getFile()) {
+      return file($this->getThrowable()->getFile());
     }
     throw new Exception('No file found in error object.');
   }
@@ -68,32 +83,32 @@ class BladeError implements BladeErrorInterface
 
   private function getSource(): string
   {
-    if($this->e->getFile()) {
-      return $this->e->getFile();
+    if($this->getThrowable()->getFile()) {
+      return $this->getThrowable()->getFile();
     }
     throw new Exception('No file found in error object.');
   }
 
   private function getLine(): int
   {
-    if($this->e->getLine()) {
-      return $this->e->getLine();
+    if($this->getThrowable()->getLine()) {
+      return $this->getThrowable()->getLine();
     }
     throw new Exception('No line found in error object.');
   }
 
   private function getMessage(): string
   {
-    if($this->e->getMessage()) {
-      return $this->e->getMessage();
+    if($this->getThrowable()->getMessage()) {
+      return $this->getThrowable()->getMessage();
     }
     throw new Exception('No message found in error object.');
   }
 
   private function getStackTrace(): string
   {
-    if($this->e->getTraceAsString()) {
-      return $this->e->getTraceAsString();
+    if($this->getThrowable()->getTraceAsString()) {
+      return $this->getThrowable()->getTraceAsString();
     }
     throw new Exception('No stack trace found in error object.');
   }

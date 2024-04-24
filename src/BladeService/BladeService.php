@@ -298,6 +298,29 @@ class BladeService implements BladeServiceInterface
      */
     public function errorHandler(Throwable $e): BladeError
     {
-        return new BladeError($e);
+        return new BladeError(
+            $this, 
+            $e
+        );
+    }
+
+    /**
+     * Get the view paths.
+     * 
+     * @return array The view paths.
+     */
+    public function getViewPaths(): array
+    {
+        return $this->viewPaths;
+    }
+
+    /**
+     * Get the cache path.
+     * 
+     * @return string|null The cache path.
+     */
+    public function getCachePath(): ?string
+    {
+        return $this->cachePath;
     }
 }

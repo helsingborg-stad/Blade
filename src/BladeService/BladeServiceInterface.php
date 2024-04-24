@@ -77,4 +77,14 @@ interface BladeServiceInterface
      * @return Error class instance.
      */
     public function errorHandler(Throwable $e);
+
+    /**
+     * Get the view paths.
+     */
+    public function getViewPaths(): array;
+
+    /**
+     * Get the cache path.
+     */
+    public function getCachePath(): ?string;
 }

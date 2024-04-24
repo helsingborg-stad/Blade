@@ -87,10 +87,10 @@
       <td>{{ $viewPaths }}</td>
   </tr>
   @endif
-  @if($viewData)
+  @if($cachePath)
   <tr>
-      <td><strong>View data:</strong></td>
-      <td>{{ print_r($viewData, true) }}</td>
+      <td><strong>Cache path:</strong></td>
+      <td>{{ $cachePath }}</td>
   </tr>
   @endif
 </table>
