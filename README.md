@@ -133,9 +133,7 @@ This package offers a convenient solution for swiftly addressing issues that ari
 try {
     return $bladeService->makeView($viewFile, ['name' => 'John Doe'], [], 'specific/view/path')->render();
 } catch (Throwable $e) {
-    $bladeServiceErrorHandler = $bladeService->errorHandler();
-    $bladeServiceErrorHandler->setThrowable($e);
-    $bladeServiceErrorHandler->print();
+    $bladeService->errorHandler($e)->print();
 }
 ```
 

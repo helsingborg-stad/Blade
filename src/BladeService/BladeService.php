@@ -298,10 +298,9 @@ class BladeService implements BladeServiceInterface
      */
     public function errorHandler(Throwable $e): BladeError
     {
-        return new BladeError(
-            $this, 
-            $e
-        );
+        $bladeError =  new BladeError($this);
+        $bladeError->setThrowable($e);
+        return $bladeError;
     }
 
     /**
