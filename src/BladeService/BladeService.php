@@ -80,12 +80,12 @@ class BladeService implements BladeServiceInterface
             $couldCreateCachePath = mkdir($cachePath, $cachePathPermissions, true);
 
             if (!$couldCreateCachePath) {
-                throw new InvalidArgumentException('Cache path does not exist and could not be created');
+                throw new InvalidArgumentException('Cache path [' . $cachePath . '] does not exist and could not be created');
             }
         }
 
         if (!is_dir($cachePath) || !is_writable($cachePath)) {
-            throw new InvalidArgumentException('Cache path is not a directory or is not writable');
+            throw new InvalidArgumentException('Cache path [' . $cachePath . '] is not a directory or is not writable');
         }
 
         $this->cachePath = $cachePath;
