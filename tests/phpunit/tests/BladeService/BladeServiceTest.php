@@ -111,7 +111,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         PHPMockery::mock($bladeServiceNamespace, "mkdir")->andReturn(false);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cache path does not exist and could not be created');
+        $this->expectExceptionMessageMatches('/^Cache path \[.*\] does not exist and could not be created/');
 
         $views = ['tests/phpunit/tests/BladeService/views'];
 
@@ -152,7 +152,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         PHPMockery::mock($bladeServiceNamespace, "is_writable")->andReturn(false);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cache path is not a directory or is not writable');
+        $this->expectExceptionMessageMatches('/^Cache path \[.*\] is not a directory or is not writable/');
 
         $views = ['tests/phpunit/tests/BladeService/views'];
 
