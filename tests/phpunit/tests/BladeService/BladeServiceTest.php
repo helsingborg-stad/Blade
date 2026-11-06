@@ -107,15 +107,37 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
     {
         // Ensure that folder can not be created.
         $bladeServiceNamespace = '\HelsingborgStad\BladeService';
-        PHPMockery::mock($bladeServiceNamespace, "file_exists")->andReturn(false);
+        PHPMockery::mock($bladeServiceNamespace, "is_dir")->andReturn(false);
         PHPMockery::mock($bladeServiceNamespace, "mkdir")->andReturn(false);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cache path does not exist and could not be created');
+        $this->expectExceptionMessageMatches('/^Cache path \[.*\] does not exist and could not be created/');
 
         $views = ['tests/phpunit/tests/BladeService/views'];
 
         $this->bladeService = new BladeService($views, null);
+        Mockery::close();
+    }
+
+    /**
+     * @testdox Instantiating the BladeService does not throw if another process creates the cache path first
+     * @runInSeparateProcess
+     */
+    public function testDoesNotThrowIfCachePathIsCreatedConcurrently()
+    {
+        // The path is missing when checked, mkdir fails because another request
+        // created it in between, and it exists when checked again.
+        $bladeServiceNamespace = '\HelsingborgStad\BladeService';
+        PHPMockery::mock($bladeServiceNamespace, "is_dir")->andReturn(false, true);
+        PHPMockery::mock($bladeServiceNamespace, "mkdir")->andReturnUsing(function () {
+            trigger_error('mkdir(): File exists', E_USER_WARNING);
+            return false;
+        });
+
+        $views = ['tests/phpunit/tests/BladeService/views'];
+
+        $this->bladeService = new BladeService($views, null);
+        $this->assertInstanceOf(BladeService::class, $this->bladeService);
         Mockery::close();
     }
 
@@ -130,7 +152,7 @@ class BladeServiceTest extends \PHPUnit\Framework\TestCase
         PHPMockery::mock($bladeServiceNamespace, "is_writable")->andReturn(false);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cache path is not a directory or is not writable');
+        $this->expectExceptionMessageMatches('/^Cache path \[.*\] is not a directory or is not writable/');
 
         $views = ['tests/phpunit/tests/BladeService/views'];
 

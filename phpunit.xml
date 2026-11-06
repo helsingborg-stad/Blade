@@ -32,6 +32,7 @@
   </testsuites>
 
   <php>
-    <ini name="error_reporting" value="E_ALL" />
+    <!-- E_ALL &amp; ~E_DEPRECATED: illuminate/* triggers PHP 8.4 implicitly nullable deprecations, which fail @runInSeparateProcess tests. -->
+    <ini name="error_reporting" value="24575" />
   </php>
 </phpunit>
