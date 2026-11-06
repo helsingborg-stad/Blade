@@ -75,12 +75,25 @@ class BladeService implements BladeServiceInterface
             $cachePath = sys_get_temp_dir() . '/blade-cache';
         }
 
-        if (!file_exists($cachePath)) {
-            $cachePathPermissions = 0775;
-            $couldCreateCachePath = mkdir($cachePath, $cachePathPermissions, true);
+        if (!is_dir($cachePath)) {
+            $mkdirError = null;
+            set_error_handler(static function (int $errno, string $errstr) use (&$mkdirError): bool {
+                $mkdirError = $errstr;
+                return true;
+            });
 
-            if (!$couldCreateCachePath) {
-                throw new InvalidArgumentException('Cache path [' . $cachePath . '] does not exist and could not be created');
+            try {
+                $couldCreateCachePath = mkdir($cachePath, 0775, true);
+            } finally {
+                restore_error_handler();
+            }
+
+            // Concurrent requests may create the directory between is_dir() and mkdir().
+            if (!$couldCreateCachePath && !is_dir($cachePath)) {
+                throw new InvalidArgumentException(
+                    'Cache path [' . $cachePath . '] does not exist and could not be created'
+                    . ($mkdirError !== null ? ': ' . $mkdirError : '')
+                );
             }
         }
 
